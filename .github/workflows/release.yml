@@ -1,0 +1,95 @@
+name: Release Skills
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version tag (e.g., v1.0.0)'
+        required: true
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set version
+        id: version
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "version=${{ github.event.inputs.version }}" >> $GITHUB_OUTPUT
+          else
+            echo "version=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create skill zips for claude.ai
+        run: |
+          mkdir -p dist/skills
+
+          find plugins -name "SKILL.md" | while read skill_file; do
+            skill_dir=$(dirname "$skill_file")
+            skill_name=$(basename "$skill_dir")
+            plugin_name=$(echo "$skill_dir" | cut -d'/' -f2)
+
+            zip_name="${plugin_name}-${skill_name}.zip"
+            (cd "$skill_dir/.." && zip -r "../../../dist/skills/$zip_name" "$skill_name")
+
+            echo "Created: dist/skills/$zip_name"
+          done
+
+          echo "## Created skill zips:"
+          ls -la dist/skills/
+
+      - name: Create plugin zips
+        run: |
+          mkdir -p dist/plugins
+
+          for plugin_dir in plugins/*/; do
+            plugin_name=$(basename "$plugin_dir")
+            zip_name="${plugin_name}-plugin.zip"
+
+            (cd plugins && zip -r "../dist/plugins/$zip_name" "$plugin_name")
+
+            echo "Created: dist/plugins/$zip_name"
+          done
+
+          echo "## Created plugin zips:"
+          ls -la dist/plugins/
+
+      - name: Generate release notes
+        id: notes
+        run: |
+          echo "## Skills" >> release_notes.md
+          echo "" >> release_notes.md
+          echo "### For claude.ai users" >> release_notes.md
+          echo "Download individual skill zips and upload via Settings > Features:" >> release_notes.md
+          echo "" >> release_notes.md
+          for zip in dist/skills/*.zip; do
+            name=$(basename "$zip" .zip)
+            echo "- \`$name\`" >> release_notes.md
+          done
+          echo "" >> release_notes.md
+          echo "### For Claude Code users" >> release_notes.md
+          echo "\`\`\`bash" >> release_notes.md
+          echo "/plugin marketplace add drewinglis/agent-skills" >> release_notes.md
+          echo "/plugin install drewinglis@agent-skills" >> release_notes.md
+          echo "\`\`\`" >> release_notes.md
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ steps.version.outputs.version }}
+          name: Release ${{ steps.version.outputs.version }}
+          body_path: release_notes.md
+          files: |
+            dist/skills/*.zip
+            dist/plugins/*.zip
+          draft: false
+          prerelease: false
