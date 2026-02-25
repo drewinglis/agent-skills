@@ -4,5 +4,11 @@
     "name": "Drew Inglis",
     "url": "https://github.com/drewinglis"
   },
-  "plugins": []
+  "plugins": [
+    {
+      "name": "confluence",
+      "description": "Confluence skills: pull pages to markdown, create new pages, and update existing pages",
+      "source": "./plugins/confluence"
+    }
+  ]
 }

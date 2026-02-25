@@ -1,0 +1,8 @@
+{
+  "name": "confluence",
+  "description": "Confluence skills: pull pages to markdown, create new pages, and update existing pages",
+  "version": "0.1.0",
+  "author": {
+    "name": "Drew Inglis"
+  }
+}
