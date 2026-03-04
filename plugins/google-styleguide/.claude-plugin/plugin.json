@@ -1,0 +1,8 @@
+{
+  "name": "google-styleguide",
+  "description": "Google style guides: auto-apply Google's coding conventions for 16 languages",
+  "version": "0.1.0",
+  "author": {
+    "name": "Drew Inglis"
+  }
+}

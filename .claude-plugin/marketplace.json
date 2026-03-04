@@ -9,6 +9,11 @@
       "name": "confluence",
       "description": "Confluence skills: pull pages to markdown, create new pages, and update existing pages",
       "source": "./plugins/confluence"
+    },
+    {
+      "name": "google-styleguide",
+      "description": "Google style guides: auto-apply Google's coding conventions for 16 languages",
+      "source": "./plugins/google-styleguide"
     }
   ]
 }
