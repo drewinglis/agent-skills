@@ -1,3 +1,4 @@
 [submodule "vendor/drewinglis/.dotfiles"]
 	path = vendor/drewinglis/.dotfiles
-	url = git@github.com:drewinglis/.dotfiles.git
+	url = https://github.com/drewinglis/.dotfiles.git
+	branch = main

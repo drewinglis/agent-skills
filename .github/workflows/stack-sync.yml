@@ -1,0 +1,40 @@
+name: stack-sync
+
+on:
+  schedule:
+    - cron: '0 10 * * *'
+  workflow_dispatch:
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      - name: Update .dotfiles submodule
+        run: git submodule update --remote vendor/drewinglis/.dotfiles
+
+      - name: Sync dstack skills
+        run: ./scripts/sync-dstack-skills.sh
+
+      - name: Commit and push
+        run: |
+          if git diff --quiet; then
+            echo "No changes to sync."
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A vendor/drewinglis/.dotfiles plugins/dstack/skills
+          git commit -m "Sync dstack skills from .dotfiles"
+          git push
+
+          echo "Pushed:"
+          git show --stat --oneline HEAD
