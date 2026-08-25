@@ -6,6 +6,11 @@
   },
   "plugins": [
     {
+      "name": "dstack",
+      "description": "Core development workflow skills: shipit, cleanup, pr-style, and ready-when-green",
+      "source": "./plugins/dstack"
+    },
+    {
       "name": "confluence",
       "description": "Confluence skills: pull pages to markdown, create new pages, and update existing pages",
       "source": "./plugins/confluence"

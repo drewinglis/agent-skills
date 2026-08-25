@@ -1,6 +1,6 @@
 {
   "name": "dstack",
-  "description": "My core workflow skills, automatically updated from my .dotfiles repo."
+  "description": "My core workflow skills, automatically updated from my .dotfiles repo.",
   "version": "0.1.0",
   "author": {
     "name": "Drew Inglis"
